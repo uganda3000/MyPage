@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Александр Прасолов — Python Developer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/* ============ БАЗА ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --bg-dark: #05010f;
+    --purple: #8b5cf6;
+    --blue: #3b82f6;
+    --cyan: #22d3ee;
+    --text: #e0e7ff;
+    --text-dim: #a5b4fc;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-dark);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* ============ ФОН: сетка + свечения ============ */
+.bg-grid {
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(139, 92, 246, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.08) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    z-index: -2;
+}
+
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+    animation: float 12s ease-in-out infinite;
+}
+.orb-1 { width: 500px; height: 500px; background: var(--purple); opacity: 0.35; top: -100px; left: -100px; }
+.orb-2 { width: 400px; height: 400px; background: var(--blue); opacity: 0.3; bottom: -100px; right: -100px; animation-delay: -3s; }
+.orb-3 { width: 300px; height: 300px; background: var(--cyan); opacity: 0.2; top: 40%; left: 50%; animation-delay: -6s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 30px) scale(0.95); }
+}
+
+/* ============ НАВИГАЦИЯ ============ */
+nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(5, 1, 15, 0.5);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+    z-index: 100;
+}
+
+.logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan);
+}
+
+.logo span { color: var(--purple); }
+
+nav ul {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    align-items: center;
+}
+
+nav a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+    position: relative;
+}
+
+nav a:hover { color: var(--cyan); }
+
+nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; left: 0;
+    width: 0; height: 1px;
+    background: var(--cyan);
+    transition: width 0.3s;
+    box-shadow: 0 0 8px var(--cyan);
+}
+
+nav a:hover::after { width: 100%; }
+
+.nav-icon { color: var(--cyan) !important; }
+.nav-icon::after { display: none; }
+.nav-icon:hover {
+    filter: drop-shadow(0 0 10px var(--cyan));
+}
+
+/* ============ ГЛАВНЫЙ ЭКРАН ============ */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 20px 60px;
+    position: relative;
+}
+
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    border-radius: 50px;
+    background: rgba(34, 211, 238, 0.05);
+    font-size: 13px;
+    color: var(--cyan);
+    margin-bottom: 30px;
+    animation: fadeIn 1s ease-out;
+}
+
+.status::before {
+    content: '';
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 10px var(--cyan);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+.hero h1 {
+    font-size: clamp(40px, 8vw, 88px);
+    font-weight: 800;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, var(--cyan) 40%, var(--purple) 80%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    animation: fadeIn 1s ease-out 0.2s backwards;
+}
+
+.typing {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--text-dim);
+    margin-bottom: 40px;
+    min-height: 30px;
+    animation: fadeIn 1s ease-out 0.4s backwards;
+}
+
+.typing::after {
+    content: '|';
+    color: var(--cyan);
+    animation: blink 1s infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeIn 1s ease-out 0.6s backwards;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--purple), var(--blue));
+    color: white;
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 50px rgba(139, 92, 246, 0.7);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+.btn-ghost:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============ СЕКЦИИ ============ */
+section {
+    padding: 100px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.section-title::before {
+    content: '';
+    width: 40px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    box-shadow: 0 0 10px var(--cyan);
+    flex-shrink: 0;
+}
+
+.section-sub {
+    color: var(--text-dim);
+    margin-bottom: 50px;
+    font-size: 16px;
+}
+
+/* ============ ОБО МНЕ ============ */
+.about-text {
+    font-size: 18px;
+    line-height: 1.8;
+    color: var(--text-dim);
+    max-width: 750px;
+}
+
+.about-text strong {
+    color: var(--cyan);
+    font-weight: 600;
+}
+
+/* ============ НАВЫКИ ============ */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.skill-card {
+    padding: 32px;
+    border-radius: 20px;
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+.skill-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+.skill-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+}
+
+.skill-card:hover::before {
+    transform: translateX(100%);
+}
+
+.skill-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+    display: block;
+    filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.6));
+}
+
+.skill-card h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.skill-card.python h3 { color: #4ade80; }
+.skill-card.cpp h3 { color: #60a5fa; }
+.skill-card.web h3 { color: #c084fc; }
+
+.skill-card p {
+    color: var(--text-dim);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.skill-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    border-radius: 2px;
+    box-shadow: 0 0 10px var(--cyan);
+    width: 0;
+    transition: width 1.5s ease-out;
+}
+
+/* ============ ТАЙМЛАЙН ОБУЧЕНИЯ ============ */
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--cyan), var(--purple), transparent);
+}
+
+.timeline-item {
+    position: relative;
+    padding: 20px 0 40px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -39px;
+    top: 26px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 15px var(--cyan);
+}
+
+.timeline-item .year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+}
+
+.timeline-item h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.timeline-item p {
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+.timeline-item p strong {
+    color: var(--cyan);
+    font-weight: 600;
+}
+
+/* ============ КОНТАКТЫ ============ */
+.contact-card {
+    padding: 50px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    text-align: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.contact-card h3 {
+    font-size: 28px;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.contact-card p {
+    color: var(--text-dim);
+    margin-bottom: 30px;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.social-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.social-links a:hover {
+    background: rgba(34, 211, 238, 0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(34, 211, 238, 0.2);
+}
+
+/* ============ ФУТЕР ============ */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-size: 13px;
+    border-top: 1px solid rgba(139, 92, 246, 0.15);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+footer a {
+    color: var(--cyan);
+    text-decoration: none;
+    transition: text-shadow 0.3s;
+}
+
+footer a:hover {
+    text-shadow: 0 0 10px var(--cyan);
+}
+
+/* ============ ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ============ */
+.reveal {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============ МОБИЛЬНАЯ АДАПТАЦИЯ ============ */
+@media (max-width: 700px) {
+    nav { padding: 15px 20px; }
+    nav ul { gap: 12px; }
+    nav a { font-size: 12px; }
+    section { padding: 60px 20px; }
+    .contact-card { padding: 30px 20px; }
+    .timeline { padding-left: 30px; }
+    .timeline-item::before { left: -29px; }
+    .btn { padding: 12px 24px; font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ФОН -->
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- НАВИГАЦИЯ -->
+<nav>
+    <div class="logo">&lt;dev<span>/</span>&gt;</div>
+    <ul>
+        <li><a href="#about">Обо мне</a></li>
+        <li><a href="#skills">Навыки</a></li>
+        <li><a href="#path">Путь</a></li>
+        <li><a href="#contact">Контакты</a></li>
+        <li>
+            <a href="https://github.com/uganda3000" target="_blank" class="nav-icon" title="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- ГЛАВНЫЙ ЭКРАН -->
+<section class="hero">
+    <div class="status">Открыт к обучению и проектам</div>
+    <h1>Александр Прасолов</h1>
+    <div class="typing" id="typing"></div>
+    <div class="cta-group">
+        <a href="#contact" class="btn btn-primary">Связаться →</a>
+        <a href="#skills" class="btn btn-ghost">Мои навыки</a>
+        <a href="https://github.com/uganda3000" target="_blank" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+        </a>
+    </div>
+</section>
+
+<!-- ОБО МНЕ -->
+<section id="about" class="reveal">
+    <h2 class="section-title">Обо мне</h2>
+    <p class="section-sub">Немного о том, чем я живу</p>
+    <p class="about-text">
+        Привет! Я — <strong>Александр Прасолов</strong>, начинающий разработчик.
+        Учился в <strong>МШП</strong>, где за 3 года освоил <strong>Python</strong> и познакомился с <strong>C++</strong>.
+        Сейчас учусь на 1 курсе <strong>IT TOP COLLEGE</strong> по специальности
+        <strong>09.02.11 «Разработчик ПО»</strong>. Пишу pet-проекты, решаю задачи,
+        разбираюсь в алгоритмах и верю, что код — это инструмент для создания будущего.
+        Открыт к стажировкам, менторству и совместным проектам.
+    </p>
+</section>
+
+<!-- НАВЫКИ -->
+<section id="skills" class="reveal">
+    <h2 class="section-title">Навыки</h2>
+    <p class="section-sub">Технологии, которые я изучаю</p>
+
+    <div class="skills-grid">
+        <div class="skill-card python">
+            <span class="skill-icon">🐍</span>
+            <h3>Python</h3>
+            <p>Основы синтаксиса, ООП, работа с библиотеками (Tkinter, pygame), скрипты и автоматизация.</p>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="75%"></div></div>
+        </div>
+
+        <div class="skill-card cpp">
+            <span class="skill-icon">⚡</span>
+            <h3>C++</h3>
+            <p>Базовый уровень: синтаксис, указатели, память, компиляция.</p>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="35%"></div></div>
+        </div>
+
+        <div class="skill-card web">
+            <span class="skill-icon">🌐</span>
+            <h3>Web</h3>
+            <p>HTML, CSS — для визуализации своих идей в браузере.</p>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="50%"></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ПУТЬ ОБУЧЕНИЯ -->
+<section id="path" class="reveal">
+    <h2 class="section-title">Путь обучения</h2>
+    <p class="section-sub">Как я двигаюсь вперёд</p>
+
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="year">2023 · Начало</div>
+            <h3>Поступил в МШП</h3>
+            <p>Начал обучение в МШП. Первое знакомство с миром IT и настоящим кодом.</p>
+        </div>
+        <div class="timeline-item">
+            <div class="year">2023 — 2026 · Обучение</div>
+            <h3>Python и основы C++</h3>
+            <p>Освоил <strong>Python</strong>: синтаксис, ООП, работу с библиотеками. Познакомился с <strong>C++</strong> — указатели, память, компиляция. Писал первые проекты.</p>
+        </div>
+        <div class="timeline-item">
+            <div class="year">Сейчас · IT TOP COLLEGE</div>
+            <h3>1 курс · Разработчик ПО</h3>
+            <p>Учусь на специальности <strong>09.02.11 «Разработчик программного обеспечения»</strong>. Углубляю знания, работаю над pet-проектами и двигаюсь к профессии.</p>
+        </div>
+    </div>
+</section>
+
+<!-- КОНТАКТЫ -->
+<section id="contact" class="reveal">
+    <div class="contact-card">
+        <h3>Давай свяжемся</h3>
+        <p>Открыт к проектам, сотрудничеству и просто интересным разговорам о коде</p>
+        <div class="social-links">
+            <a href="https://github.com/uganda3000" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                GitHub
+            </a>
+            <a href="https://t.me/AlexPytho" target="_blank">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+                </svg>
+                Telegram
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ФУТЕР -->
+<footer>
+    © 2026 Александр Прасолов · Сделано с 💜 и кодом от DeepSeek
+</footer>
+
+<script>
+/* ====== ЭФФЕКТ ПЕЧАТАЮЩЕГОСЯ ТЕКСТА ====== */
+const phrases = [
+    "Python Developer",
+    "C++ Enthusiast",
+    "IT TOP COLLEGE · 09.02.11",
+    "Building the Future",
+];
+let pIndex = 0, cIndex = 0, deleting = false;
+const typingEl = document.getElementById('typing');
+
+function type() {
+    const current = phrases[pIndex];
+    if (!deleting) {
+        typingEl.textContent = current.substring(0, cIndex++);
+        if (cIndex > current.length) {
+            deleting = true;
+            setTimeout(type, 1800);
+            return;
+        }
+    } else {
+        typingEl.textContent = current.substring(0, cIndex--);
+        if (cIndex < 0) {
+            deleting = false;
+            pIndex = (pIndex + 1) % phrases.length;
+        }
+    }
+    setTimeout(type, deleting ? 40 : 90);
+}
+type();
+
+/* ====== ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ====== */
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+        }
+    });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ====== ЗАПОЛНЕНИЕ ПОЛОСОК НАВЫКОВ ====== */
+const skillObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const bars = entry.target.querySelectorAll('.skill-bar-fill');
+            bars.forEach(bar => {
+                bar.style.width = bar.dataset.width;
+            });
+            skillObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.3 });
+
+const skillsSection = document.getElementById('skills');
+if (skillsSection) skillObserver.observe(skillsSection);
+</script>
+
+</body>
+</html>
